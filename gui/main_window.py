@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import filedialog, messagebox
 from pathlib import Path
 import traceback
@@ -15,7 +16,7 @@ class CxDocAuditorApp:
 
         self.root.title("CxDoc Auditor")
 
-        self.root.geometry("750x280")
+        self.root.geometry("750x320")
 
         self.root.resizable(False, False)
 
@@ -82,6 +83,35 @@ class CxDocAuditorApp:
 
         tk.Label(self.root, textvariable=self.status).grid(row=6, column=0, sticky="w")
 
+        # ----------------------------------
+
+        self.progress = ttk.Progressbar(
+            self.root,
+            orient="horizontal",
+            mode="determinate",
+            length=500
+        )
+
+        self.progress.grid(
+            row=7,
+            column=0,
+            columnspan=2,
+            pady=(15, 5)
+        )
+
+        self.progress_label = tk.StringVar(
+            value="0%"
+        )
+
+        tk.Label(
+            self.root,
+            textvariable=self.progress_label
+        ).grid(
+            row=8,
+            column=0,
+            sticky="w"
+        )
+
     # --------------------------------------------------
 
     def select_system_folder(self):
@@ -115,6 +145,8 @@ class CxDocAuditorApp:
 
         self.generate_button.config(state="disabled")
         self.status.set("Scanning folders...")
+        self.progress.configure(value=0)
+        self.progress_label.set("0%")
 
         worker = threading.Thread(
             target=self.generate_report,
@@ -122,6 +154,38 @@ class CxDocAuditorApp:
         )
 
         worker.start()
+    def update_progress(
+            
+            
+            self,
+            current,
+            total,
+            equipment_name,
+        ):
+        
+
+        percentage = int(current / total * 100)
+
+        self.root.after(
+            0,
+            lambda: self.progress.configure(
+                value=percentage
+            )
+        )
+
+        self.root.after(
+            0,
+            lambda: self.progress_label.set(
+                f"{current} / {total}   ({percentage}%)"
+            )
+        )
+
+        self.root.after(
+            0,
+            lambda: self.status.set(
+                f"Scanning {equipment_name}"
+            )
+        )
 
     # --------------------------------------------------
     def generate_report(self):
@@ -134,9 +198,10 @@ class CxDocAuditorApp:
         try:
 
             report = generate_inventory_report(
-                Path(self.system_folder.get()),
-                Path(self.output_folder.get()),
-            )
+    Path(self.system_folder.get()),
+    Path(self.output_folder.get()),
+    self.update_progress,
+)
 
             self.root.after(
                 0,
@@ -150,6 +215,10 @@ class CxDocAuditorApp:
                     f"Report created:\n\n{report}"
                 )
             )
+            self.root.after(
+    0,
+    lambda: self.progress.configure(value=100)
+)
 
         except Exception as e:
 

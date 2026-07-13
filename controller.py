@@ -5,11 +5,15 @@ from excel.writer import generate_excel_report
 
 
 def generate_report(
-    system_folder: Path,
-    output_folder: Path,
+    system_folder,
+    output_folder,
+    progress_callback=None,
 ):
 
-    report_data = scan_system(system_folder)
+    report_data = scan_system(
+    system_folder,
+    progress_callback,
+)
 
     inventory = report_data["inventory"]
 

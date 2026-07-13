@@ -4,11 +4,13 @@ from controller import generate_report
 
 
 def generate_inventory_report(
-    system_folder: Path,
-    output_folder: Path,
+    system_folder,
+    output_folder,
+    progress_callback=None,
 ):
 
-    return generate_report(
-        system_folder,
-        output_folder,
-    )
+   return generate_report(
+    system_folder,
+    output_folder,
+    progress_callback,
+)

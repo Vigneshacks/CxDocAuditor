@@ -93,7 +93,10 @@ def discover_document_folders(level_folder: Path) -> list[Path]:
 
     return document_folders
 
-def scan_system(system_folder: Path) -> list[dict]:
+def scan_system(
+    system_folder: Path,
+    progress_callback=None,
+) -> dict:
     """
     Scan the selected system folder and build an inventory.
     """
@@ -108,7 +111,18 @@ def scan_system(system_folder: Path) -> list[dict]:
 
     system_inventory = []
 
-    for equipment in equipment_folders:
+    total = len(equipment_folders)
+
+    for index, equipment in enumerate(equipment_folders, start=1):
+
+        if progress_callback:
+
+
+            progress_callback(
+        index,
+        total,
+        equipment.name
+        )
 
         level_inventory = {}
 
