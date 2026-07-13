@@ -61,7 +61,7 @@ def extract_document_ids(document_folder: Path) -> list[str]:
 
         return []
 
-    pdf_files = sorted(document_folder.glob("*.pdf"))
+    pdf_files = document_folder.glob("*.pdf")
 
     for pdf in pdf_files:
 
@@ -69,10 +69,10 @@ def extract_document_ids(document_folder: Path) -> list[str]:
 
         document_ids.add(document_id)
 
-    logger.info(
-        "Extracted %d document IDs from %s",
-        len(document_ids),
-        document_folder.name,
-    )
+    # logger.info(
+    #     "Extracted %d document IDs from %s",
+    #     len(document_ids),
+    #     document_folder.name,
+    # )
 
     return sorted(document_ids)
